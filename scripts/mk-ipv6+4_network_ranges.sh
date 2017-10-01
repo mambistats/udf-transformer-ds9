@@ -1,6 +1,10 @@
 #! /usr/bin/env bash
-GEOIP2_CSV_CONVERTER_CMD="${BASEDIR}/scripts/geoip2-csv-converter-darwin"
-# GEOIP2_CSV_CONVERTER_CMD="${BASEDIR}/scripts/geoip2-csv-converter-linux"
+if [ "x$(uname -s)" = "xDarwin" ]; then
+  GEOIP2_CSV_CONVERTER_CMD="${BASEDIR}/scripts/geoip2-csv-converter-darwin"
+else
+  GEOIP2_CSV_CONVERTER_CMD="${BASEDIR}/scripts/geoip2-csv-converter-linux"
+fi
+echo "using [${GEOIP2_CSV_CONVERTER_CMD}]"
 mkdir -p "${BASEDIR}/resources"
 cd "${BASEDIR}/resources"
 curl -o GeoLite2-City-CSV.zip http://geolite.maxmind.com/download/geoip/database/GeoLite2-City-CSV.zip
