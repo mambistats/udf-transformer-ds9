@@ -4,6 +4,6 @@
 <mapEntry key="BASEDIR" value="${project_loc:/udf-transformer-ds9}"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${project}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/udf-transformer-ds9/scripts/test-udf-transformer-one-line.sh}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/udf-transformer-ds9/scripts/test-udf-transformer-ipv6.sh}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:/udf-transformer-ds9}"/>
 </launchConfiguration>
