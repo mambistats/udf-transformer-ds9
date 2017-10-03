@@ -14,6 +14,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+import com.kc14.hadoop.hive.transformers.udf.common.StaticOptionHolder;
 import com.kc14.hadoop.hive.transformers.udf.common.UDFAdapter;
 import com.kc14.hadoop.hive.transformers.udf.common.UDFPackageIF;
 import com.kc14.java.reflect.BeanUtils;
@@ -166,7 +167,7 @@ public class UdgerUDFs extends UDFAdapter implements UDFPackageIF {
 		}
 		Map<String, String> udgerUaResultProperties = BeanUtils.getBeanProperties(udgerUaResult);
 		List<String> udgerUaResultPropertyValues = Arrays.asList(this.fields).stream().map(field -> udgerUaResultProperties.get(field)).collect(Collectors.toList());
-		return String.join("\t", udgerUaResultPropertyValues); 
+		return String.join(StaticOptionHolder.outputsep, udgerUaResultPropertyValues); 
 	}
 
 }

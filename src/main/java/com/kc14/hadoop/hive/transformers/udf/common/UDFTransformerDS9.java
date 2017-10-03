@@ -18,8 +18,8 @@ import org.apache.commons.cli.ParseException;
 
 public abstract class UDFTransformerDS9 {
 
-	ColumnProjections  colProjections;
-	int             numOfBuffers;
+	ColumnProjections colProjections;
+	int               numOfBuffers;
 
 	// Ctor
 	public UDFTransformerDS9 (ColumnProjections colProjections, int numOfBuffers) {
@@ -41,11 +41,11 @@ public abstract class UDFTransformerDS9 {
 		List<String> outputRow = null;
 
 		while ((line = in.readLine()) != null) {
-			inputRow = line.split("\t");
+			inputRow = line.split(StaticOptionHolder.inputsep);
 
 			outputRow = this.colProjections.projectRow(inputRow);
 
-			out.write(String.join("\t", outputRow));
+			out.write(String.join(StaticOptionHolder.outputsep, outputRow));
 			out.newLine();
 		}
 		// in.close(); // Hive should do that ...
@@ -55,7 +55,10 @@ public abstract class UDFTransformerDS9 {
 	
 	private final static String OPTION_SELECT =       "select";
 	private final static String OPTION_BUFFERS =      "buffers";
-	private static final int    NUM_DEFAULT_BUFFERS = 1;
+	private final static String OPTION_INPUT_SEP =    "input-sep";
+	private final static String OPTION_OUTPUT_SEP =   "output-sep";
+
+	private static final int    DEFAULT_NUM_BUFFERS = 1;
 
 	public static CommandLine parse (String[] args, Options otherOptions) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
@@ -69,7 +72,6 @@ public abstract class UDFTransformerDS9 {
 				.required     (true)
 				.hasArgs      () // Unlimited
 				.argName      ("col or UDF[col]")
-				.type         (Number.class)
 				.build());
 
 		options.addOption(Option.builder()
@@ -80,6 +82,24 @@ public abstract class UDFTransformerDS9 {
 				.argName      ("n")
 				.numberOfArgs (1)
 				.type         (Number.class)
+				.build());
+
+		options.addOption(Option.builder()
+				.longOpt      (OPTION_INPUT_SEP)
+				.desc         ("input separator (default [\\t]")
+				.required     (false)
+				.hasArg       (true)
+				.argName      ("separator")
+				.numberOfArgs (1)
+				.build());
+
+		options.addOption(Option.builder()
+				.longOpt      (OPTION_OUTPUT_SEP)
+				.desc         ("output separator (default [\\t]")
+				.required     (false)
+				.hasArg       (true)
+				.argName      ("separator")
+				.numberOfArgs (1)
 				.build());
 
 		String usageHeader = "Stdin: Line with Hive TSV\n"
@@ -99,6 +119,8 @@ public abstract class UDFTransformerDS9 {
 
 		try {
 			commandLine = parser.parse(options, args);
+			if (commandLine.hasOption(OPTION_INPUT_SEP)) StaticOptionHolder.inputsep = commandLine.getOptionValue(OPTION_INPUT_SEP);
+			if (commandLine.hasOption(OPTION_OUTPUT_SEP)) StaticOptionHolder.outputsep = commandLine.getOptionValue(OPTION_OUTPUT_SEP);
 		} catch (ParseException e) {
 			System.err.println(e.getMessage());
 			boolean autoUsageYes = true;
@@ -116,7 +138,7 @@ public abstract class UDFTransformerDS9 {
 	}
 
 	public static int getBuffers (CommandLine commandLine) throws ParseException {
-		return commandLine.hasOption(OPTION_BUFFERS) ? ((Number)commandLine.getParsedOptionValue("buffers")).intValue() :    NUM_DEFAULT_BUFFERS ;
+		return commandLine.hasOption(OPTION_BUFFERS) ? ((Number)commandLine.getParsedOptionValue("buffers")).intValue() : DEFAULT_NUM_BUFFERS ;
 	}
 
 }

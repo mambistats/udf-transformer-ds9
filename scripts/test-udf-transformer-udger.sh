@@ -6,4 +6,5 @@ Use Udger \
 --udger-database "${BASEDIR}/resources/udgerdb_v3.dat" \
 --udger-inmem \
 --udger-cache 100000 \
---select 1 2 3 Udger.parseUa[4] 5 6
+--select 1 2 3 Udger.parseUa[4] 5 6 \
+--output-sep "|"
