@@ -32,6 +32,13 @@ import com.kc14.janvanbesien.com.googlecode.ipv6.IPv6AddressRange;
 
 public class IPv6UDFs extends UDFAdapter implements UDFPackageIF {
 	
+	private static final String PACKAGE_NAME = "IPv6"; 
+	
+	@Override
+	public String getPackageName() {
+		return PACKAGE_NAME;
+	}
+
 	private final static String OPTION_IPv6_RANGES = "ipv6-ranges";
 	private final static String OPTION_IPv6_LIST =   "ipv6-list";
 	

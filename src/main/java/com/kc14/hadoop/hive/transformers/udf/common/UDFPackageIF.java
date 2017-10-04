@@ -12,6 +12,8 @@ public interface UDFPackageIF {
 	static final String PACKAGE_SEPARATOR_REGEX = "\\."; // An UDF name like Basic.concat_v[1,2,3]
 	static final String UDF_PREFIX = "UDF_"; // UDF implementing Methods must start with this prefix
 	static final String HIVE_NULL_STR = "\\N";
+	
+	String getPackageName();
 
 	Collection<Option> getOptions();
 

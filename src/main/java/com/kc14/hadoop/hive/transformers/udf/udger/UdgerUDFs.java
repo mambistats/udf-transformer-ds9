@@ -23,6 +23,13 @@ import com.kc14.org.udger.parser.UdgerUaResult;
 
 public class UdgerUDFs extends UDFAdapter implements UDFPackageIF {
 	
+	private static final String PACKAGE_NAME = "Udger"; 
+
+	@Override
+	public String getPackageName() {
+		return PACKAGE_NAME;
+	}
+
 	private final static String OPTION_UDGER_DATABASE = "udger-database";
 	private final static String OPTION_UDGER_INMEM = "udger-inmem";
 	private final static String OPTION_UDGER_CACHE = "udger-cache";

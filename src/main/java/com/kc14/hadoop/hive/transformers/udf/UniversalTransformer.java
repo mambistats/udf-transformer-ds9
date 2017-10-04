@@ -20,19 +20,14 @@ public class UniversalTransformer extends UDFTransformerDS9 {
 		super(colProjections, numOfBuffers);
 	}
 	
-	private static String getUDFPackages() {
-		return Arrays.toString(UDFRegisteredPackage.values());
-	}
-
-	public static void main(String[] args) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ParseException {
+	public static void main(String[] args) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ParseException, InstantiationException, ClassNotFoundException {
 		
 		// UniversalTransformer Arguments & Option Parsing
 
 		// First Argument is csv list of UDF packages to use ...
 		
 		if (args.length < 1) {
-			System.err.println("The first argument must be a comma separated list of UDF packages. Known UDF Packages:");
-			System.err.println(getUDFPackages());
+			System.err.println("The first argument must be a comma separated list of UDF packages classes to load, e.g. [com.kc14.hadoop.hive.transformers.udf.common.BasicUDFs].");
 			System.exit(99);
 		}
 

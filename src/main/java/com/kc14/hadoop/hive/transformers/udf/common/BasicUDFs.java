@@ -15,6 +15,13 @@ import com.kc14.hadoop.hive.transformers.udf.ipv6.IPv6UDFs;
 
 public class BasicUDFs extends UDFAdapter implements UDFPackageIF {
 
+	private static final String PACKAGE_NAME = "Basic"; 
+
+	@Override
+	public String getPackageName() {
+		return PACKAGE_NAME;
+	}
+
 	@Override
 	public Collection<Option> getOptions() {
 		return Collections.emptyList();

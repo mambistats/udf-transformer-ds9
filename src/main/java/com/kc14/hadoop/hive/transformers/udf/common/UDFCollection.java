@@ -4,12 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-
-import com.kc14.hadoop.hive.transformers.udf.UDFRegisteredPackage;
 
 /**
  * @author Frank Kemmer
@@ -19,21 +19,35 @@ import com.kc14.hadoop.hive.transformers.udf.UDFRegisteredPackage;
  * Calls the UDF
  */
 public class UDFCollection extends UDFAdapter implements UDFPackageIF {
-
-	UDFRegisteredPackage[] udfPackages = null;
 	
-	public UDFCollection (String[] udfPackagesToLoadByName) {
-		this.udfPackages = new UDFRegisteredPackage[udfPackagesToLoadByName.length];
+	private static final String PACKAGE_NAME = "UDFCollection"; 
+
+	@Override
+	public String getPackageName() {
+		return PACKAGE_NAME;
+	}
+
+	// UDFRegisteredPackage[] udfPackages = null;
+	
+	UDFPackageIF[] udfPackageList = null;
+	Map<String, UDFPackageIF> udfPackageLookup = null;
+	
+	public UDFCollection (String[] udfPackagesToLoadByName) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		this.udfPackageList = new UDFPackageIF[udfPackagesToLoadByName.length];
+		this.udfPackageLookup = new HashMap<String, UDFPackageIF>(udfPackagesToLoadByName.length);
 		for (int i = 0; i < udfPackagesToLoadByName.length; ++i) {
-			this.udfPackages[i] = UDFRegisteredPackage.valueOf(udfPackagesToLoadByName[i]);
+			UDFPackageIF udfPackage = (UDFPackageIF) Class.forName(udfPackagesToLoadByName[i]).newInstance();
+			this.udfPackageList[i] = udfPackage;
+			String udfPackageName = udfPackage.getPackageName();
+			this.udfPackageLookup.put(udfPackageName, udfPackage);
 		}
 	}
 
 	@Override
 	public Collection<Option> getOptions() {
 		Options udfPackagesOptions = new Options();
-		for (UDFRegisteredPackage udfPackage : this.udfPackages) {
-			for (Option udfOption : udfPackage.getUDFPackageIF().getOptions()) {
+		for (UDFPackageIF udfPackage : this.udfPackageList) {
+			for (Option udfOption : udfPackage.getOptions()) {
 				udfPackagesOptions.addOption(udfOption);
 			}
 		}
@@ -42,8 +56,8 @@ public class UDFCollection extends UDFAdapter implements UDFPackageIF {
 	
 	@Override
 	public void initFrom(CommandLine commandLine) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-		for (UDFRegisteredPackage udfPackage : this.udfPackages) {
-			udfPackage.getUDFPackageIF().initFrom(commandLine);
+		for (UDFPackageIF udfPackage : this.udfPackageList) {
+			udfPackage.initFrom(commandLine);
 		}
 	}
 
@@ -53,8 +67,8 @@ public class UDFCollection extends UDFAdapter implements UDFPackageIF {
 		try {
 			String udfPackageName = split[0];
 			String udfMethodName = split[1];
-			UDFRegisteredPackage udfPackage = UDFRegisteredPackage.valueOf(udfPackageName);
-			return udfPackage.getUDFPackageIF().getUDF(udfMethodName, udfCols);
+			UDFPackageIF udfPackage = this.udfPackageLookup.get(udfPackageName);
+			return udfPackage.getUDF(udfMethodName, udfCols);
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.err.format("UDF [%s]: Bad Format. Is the package name missing?", udfName);
@@ -66,8 +80,8 @@ public class UDFCollection extends UDFAdapter implements UDFPackageIF {
 	@Override
 	public void setInputRow(String[] inputRow) {
 		super.setInputRow(inputRow);
-		for (UDFRegisteredPackage udfPackage : this.udfPackages) {
-			udfPackage.getUDFPackageIF().setInputRow(inputRow);
+		for (UDFPackageIF udfPackage : this.udfPackageList) {
+			udfPackage.setInputRow(inputRow);
 		}
 	}
 

@@ -29,7 +29,7 @@ public abstract class UDFAdapter implements UDFPackageIF {
 	private Method getFixedArgsUDF (String udfName, int[] udfCols) throws NoSuchMethodException, SecurityException {
 		String methodName = UDF_PREFIX + udfName;
 		Class<?>[] parameterTypes = createParameterTypes(udfCols);
-		return this.getClass().getDeclaredMethod(methodName, parameterTypes);
+		return this.getClass().getMethod(methodName, parameterTypes);
 	}
 	
 	private final static Class<?>[] PARAMETER_TYPE_VARARGS = { String[].class };
@@ -41,7 +41,7 @@ public abstract class UDFAdapter implements UDFPackageIF {
 	private Method getVarargsUDF (String udfName, int[] udfCols) throws NoSuchMethodException, SecurityException {
 		String methodName = UDF_PREFIX + udfName;
 		Class<?>[] parameterType = createParameterTypeVarargs();
-		return this.getClass().getDeclaredMethod(methodName, parameterType);
+		return this.getClass().getMethod(methodName, parameterType);
 	}
 
 	@Override
