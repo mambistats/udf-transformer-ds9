@@ -1,8 +1,6 @@
 package com.kc14.hadoop.hive.transformers.udf.common;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.lang.Exception;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +53,7 @@ public class UDFCollection extends UDFAdapter implements UDFPackageIF {
 	}
 	
 	@Override
-	public void initFrom(CommandLine commandLine) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+	public void initFrom(CommandLine commandLine) throws Exception {
 		for (UDFPackageIF udfPackage : this.udfPackageList) {
 			udfPackage.initFrom(commandLine);
 		}

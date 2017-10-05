@@ -1,6 +1,6 @@
 package com.kc14.hadoop.hive.transformers.udf;
 
-import java.io.IOException;
+import java.lang.Exception;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,7 +20,7 @@ public class UniversalTransformer extends UDFTransformerDS9 {
 		super(colProjections, numOfBuffers);
 	}
 	
-	public static void main(String[] args) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ParseException, InstantiationException, ClassNotFoundException {
+	public static void main(String[] args) throws Exception {
 		
 		// UniversalTransformer Arguments & Option Parsing
 
