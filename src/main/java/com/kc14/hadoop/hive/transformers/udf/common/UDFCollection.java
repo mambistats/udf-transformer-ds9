@@ -1,9 +1,9 @@
 package com.kc14.hadoop.hive.transformers.udf.common;
 
-import java.lang.Exception;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -27,25 +27,22 @@ public class UDFCollection extends UDFAdapter implements UDFPackageIF {
 
 	// UDFRegisteredPackage[] udfPackages = null;
 	
-	UDFPackageIF[] udfPackageList = null;
-	Map<String, UDFPackageIF> udfPackageLookup = null;
+	Map<String, UDFPackageIF> udfPackages = null;
 	
 	public UDFCollection (String[] udfPackagesToLoadByName) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		this.udfPackageList = new UDFPackageIF[udfPackagesToLoadByName.length];
-		this.udfPackageLookup = new HashMap<String, UDFPackageIF>(udfPackagesToLoadByName.length);
-		for (int i = 0; i < udfPackagesToLoadByName.length; ++i) {
-			UDFPackageIF udfPackage = (UDFPackageIF) Class.forName(udfPackagesToLoadByName[i]).newInstance();
-			this.udfPackageList[i] = udfPackage;
+		this.udfPackages = new LinkedHashMap<String, UDFPackageIF>(udfPackagesToLoadByName.length);
+		for (String udfPackageToLoadByName: udfPackagesToLoadByName) {
+			UDFPackageIF udfPackage = (UDFPackageIF) Class.forName(udfPackageToLoadByName).newInstance();
 			String udfPackageName = udfPackage.getPackageName();
-			this.udfPackageLookup.put(udfPackageName, udfPackage);
+			this.udfPackages.put(udfPackageName, udfPackage);
 		}
 	}
 
 	@Override
 	public Collection<Option> getOptions() {
 		Options udfPackagesOptions = new Options();
-		for (UDFPackageIF udfPackage : this.udfPackageList) {
-			for (Option udfOption : udfPackage.getOptions()) {
+		for (Entry<String, UDFPackageIF> udfPackageEntry : this.udfPackages.entrySet()) {
+			for (Option udfOption : udfPackageEntry.getValue().getOptions()) {
 				udfPackagesOptions.addOption(udfOption);
 			}
 		}
@@ -54,8 +51,8 @@ public class UDFCollection extends UDFAdapter implements UDFPackageIF {
 	
 	@Override
 	public void initFrom(CommandLine commandLine) throws Exception {
-		for (UDFPackageIF udfPackage : this.udfPackageList) {
-			udfPackage.initFrom(commandLine);
+		for (Entry<String, UDFPackageIF> udfPackageEntry : this.udfPackages.entrySet()) {
+			udfPackageEntry.getValue().initFrom(commandLine);
 		}
 	}
 
@@ -65,7 +62,7 @@ public class UDFCollection extends UDFAdapter implements UDFPackageIF {
 		try {
 			String udfPackageName = split[0];
 			String udfMethodName = split[1];
-			UDFPackageIF udfPackage = this.udfPackageLookup.get(udfPackageName);
+			UDFPackageIF udfPackage = this.udfPackages.get(udfPackageName);
 			return udfPackage.getUDF(udfMethodName, udfCols);
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
@@ -78,8 +75,8 @@ public class UDFCollection extends UDFAdapter implements UDFPackageIF {
 	@Override
 	public void setInputRow(String[] inputRow) {
 		super.setInputRow(inputRow);
-		for (UDFPackageIF udfPackage : this.udfPackageList) {
-			udfPackage.setInputRow(inputRow);
+		for (Entry<String, UDFPackageIF> udfPackageEntry : this.udfPackages.entrySet()) {
+			udfPackageEntry.getValue().setInputRow(inputRow);
 		}
 	}
 
