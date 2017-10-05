@@ -1,8 +1,6 @@
 package com.kc14.hadoop.hive.transformers.udf.common;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.lang.Exception;
 import java.util.Collection;
 
 import org.apache.commons.cli.CommandLine;
@@ -17,7 +15,7 @@ public interface UDFPackageIF {
 
 	Collection<Option> getOptions();
 
-	void initFrom(CommandLine commandLine) throws FileNotFoundException, UnsupportedEncodingException, IOException;
+	void initFrom(CommandLine commandLine) throws Exception;
 	
 	UDFMethod getUDF(String udfName, int[] udfCols) throws NoSuchMethodException, SecurityException;
 	
